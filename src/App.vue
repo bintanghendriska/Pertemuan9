@@ -1,30 +1,54 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app">
+    <h1>My To-do List</h1>
+    
+    <input v-model="newTask" @keyup.enter="addTask" placeholder="Tambahkan tugas baru..." />
+
+    <div v-if="tasks.length">
+      <TodoItem
+        v-for="(task, index) in tasks"
+        :key="index"
+        :task="task"
+        @delete-task="deleteTask(index)"
+      >
+        <template #default>
+          <span>📝</span>
+        </template>
+      </TodoItem>
+    </div>
+    <p v-else>Tidak ada tugas.</p>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script>
+import TodoItem from './components/TodoItem.vue'
+
+export default {
+  components: { TodoItem },
+  data() {
+    return {
+      newTask: '',
+      tasks: []
+    }
+  },
+  methods: {
+    addTask() {
+      if (this.newTask.trim()) {
+        this.tasks.push(this.newTask.trim())
+        this.newTask = ''
+      }
+    },
+    deleteTask(index) {
+      this.tasks.splice(index, 1)
+    }
+  }
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+</script>
+
+<style>
+.app {
+  max-width: 500px;
+  margin: auto;
+  padding: 1em;
 }
 </style>
